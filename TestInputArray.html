@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Input Data Mahasiswa</title>
+</head>
+<body>
+
+<h2>Form Input Mahasiswa</h2>
+
+<form id="formMahasiswa">
+    NIM: <input type="text" id="nim"><br><br>
+    Nama: <input type="text" id="nama"><br><br>
+    Jurusan: <input type="text" id="jurusan"><br><br>
+    Fakultas: <input type="text" id="fakultas"><br><br>
+    <button type="button" onclick="tambahData()">Tambah</button>
+</form>
+
+<h2>Data Mahasiswa</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>NIM</th>
+            <th>Nama</th>
+            <th>Jurusan</th>
+            <th>Fakultas</th>
+        </tr>
+    </thead>
+    <tbody id="tabelData"></tbody>
+</table>
+
+<script>
+let dataMahasiswa = []; // array objek
+
+function tambahData() {
+    let nim = document.getElementById("nim").value;
+    let nama = document.getElementById("nama").value;
+    let jurusan = document.getElementById("jurusan").value;
+    let fakultas = document.getElementById("fakultas").value;
+
+    // buat objek
+    let mahasiswa = {
+        nim: nim,
+        nama: nama,
+        jurusan: jurusan,
+        fakultas: fakultas
+    };
+
+    // masukkan ke array
+    dataMahasiswa.push(mahasiswa);
+
+    tampilkanData();
+}
+
+function tampilkanData() {
+    let tabel = document.getElementById("tabelData");
+    tabel.innerHTML = "";
+
+    dataMahasiswa.forEach(function(item) {
+        let row = `
+            <tr>
+                <td>${item.nim}</td>
+                <td>${item.nama}</td>
+                <td>${item.jurusan}</td>
+                <td>${item.fakultas}</td>
+            </tr>
+        `;
+        tabel.innerHTML += row;
+    });
+}
+</script>
