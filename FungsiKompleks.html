@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas 2 - Fungsi Kompleks Analitis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; }
+        .output-box {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Analitik Data Penjualan (Higher-Order Function & Closure)</h2>
+    <p>Di bawah ini adalah hasil pengolahan data menggunakan fungsi kompleks (menerima callback filter dan mengembalikan object method):</p>
+    
+    <div id="hasilFungsi" class="output-box">Memproses data...</div>
+</div>
+
+<script>
+    // Data Mentah Penjualan
+    const dataPenjualan = [
+        { produk: "Laptop Gaming", kategori: "Elektronik", harga: 15000000, jumlah: 2 },
+        { produk: "Buku Logika", kategori: "Buku", harga: 120000, jumlah: 5 },
+        { produk: "Smartphone", kategori: "Elektronik", harga: 4500000, jumlah: 1 },
+        { produk: "Novel Fiksi", kategori: "Buku", harga: 85000, jumlah: 4 }
+    ];
+
+    /**
+     * FUNGSI KOMPLEKS: Higher-Order Function (Menerima kriteriaFilter berupa fungsi)
+     * dan memanfaatkan fitur Closure (mengembalikan method cetak).
+     */
+    function buatLaporanPenjualan(daftarBarang, kriteriaFilter) {
+        
+        // 1. Menggunakan Array built-in method .filter() dengan callback dinamis
+        const dataTersaring = daftarBarang.filter(kriteriaFilter);
+
+        // 2. Menggunakan .reduce() untuk menjumlahkan akumulasi objek secara kompleks
+        const ringkasan = dataTersaring.reduce((akumulator, item) => {
+            const totalPerItem = item.harga * item.jumlah;
+            
+            akumulator.totalPendapatan += totalPerItem;
+            akumulator.totalProdukTerjual += item.jumlah;
+            
+            if (!akumulator.kategoriTerlibat.includes(item.kategori)) {
+                akumulator.kategoriTerlibat.push(item.kategori);
+            }
+            
+            return akumulator;
+        }, { totalPendapatan: 0, totalProdukTerjual: 0, kategoriTerlibat: [] });
+
+        // 3. Mengembalikan Objek berisi Data Baru dan Method khusus (Closure)
+        return {
+            dataMentah: dataTersaring,
+            ringkasan: ringkasan,
+            cetakLaporan(namaAdmin) {
+                return `--- LAPORAN PENJUALAN OLEH: ${namaAdmin.toUpperCase()} ---
+--------------------------------------------------
+Kategori Terlibat  : ${ringkasan.kategoriTerlibat.join(', ')}
+Total Item Terjual : ${ringkasan.totalProdukTerjual} unit
+Total Pendapatan   : Rp ${ringkasan.totalPendapatan.toLocaleString('id-ID')}
+--------------------------------------------------
+Status Pemrosesan  : BERHASIL DIRESOLUSI`;
+            }
+        };
+    }
+
+    // --- CARA MENJALANKAN FUNGSI ---
+    // Kita buat aturan filter: Hanya proses barang yang harganya di atas Rp 100.000
+    const filterHargaDiAtas100k = (item) => item.harga > 100000;
+
+    // Memanggil fungsi kompleks utama
+    const laporanKhusus = buatLaporanPenjualan(dataPenjualan, filterHargaDiAtas100k);
+
+    // Menampilkan hasil cetak laporan ke elemen HTML
+    document.getElementById('hasilFungsi').innerText = laporanKhusus.cetakLaporan("Ardianto (Admin)");
+</script>
+
+</body>
+</html>
